@@ -1,0 +1,41 @@
+(
+  SELECT   
+	zs.ITEM_NUM,
+	case when  zs.MOVE_DAYS < 50 then zs.MO_ALL else zs.MO end as M,
+	zso.ABC_VOLUME,
+	zs.VO,
+	zs1.AVG_MOVE_3M,
+	zs_w.WHSE_CODE 
+FROM
+	kdw.DWF_ITN_STATS zs,
+	KDW.DWD_ZGL_STAT_OTHER  zso,
+	KDW.DWD_WHSE  zs_w,
+   -- KDW.DWD_WHSE  zs_defw,
+	KDW.DWD_ITEM  zs_i,
+	KDW.DWE_ITEM_G  zs_item_g,
+	KDW.DWF_ZGL_STAT  zs1
+WHERE
+	 zso.ID_ZGL_STAT_OTHER=zs1.ID_ZGL_STAT_OTHER  
+	AND   zs1.ID_ITEM=zs_i.ID_ITEM   
+	AND zs_i.item_num=zs1.item_num
+	AND zs.item_num=zs_i.item_num 
+	AND zs.id_whse=zs_w.id_whse
+	AND zs1.id_whse=zs_w.id_whse
+	-- AND  ( zs_i.SKL_OSN=zs_w.WHSE_CODE  )
+	--  in @Prompt('4. Код склада','A',,multi,free)
+	-- AND  zs_w.WHSE_CODE  =  zs_defw.GRP_COUNT
+	--AND (     zs_i.SKL_OSN =zs_defw.GRP_COUNT
+	--AND   zs_defw.WHSE_CODE  =  zs_defw.GRP_COUNT
+	--  AND  zs_w.TERR_CODE  =  '0'
+	--  AND  zs_w.WHSE_TYPE  =  1
+	AND  zs_i.HSZ  =  '064'
+	AND  zs_i.STATE  =  1
+	AND  zs_i.IND_CATEGORY  IN  ('О', 'D', 'Л', 'U')
+	and  zs.ITEM_NUM=zs_item_g.ITEM_NUM  
+	--and  (zs_item_g.ITEM_G2 NOT IN ( '5304' , '5308'))
+	--  AND ( (zs_i.item_ts  NOT IN  ('Т06', 'Т75')  AND  zso.ABC0  IN  ('A', 'B')) or (zs_i.item_ts = 'Т45' and zso.ABC0 IN ('A','B','C')))
+	AND  zs_i.item_ts  NOT IN  ('Т33', 'Т44')
+	--AND  zso.ABC0  IN  ('A', 'B')
+	AND  ( zs1.id_date = (SELECT kdw.getZGLDateID FROM dual ))
+	AND ( zs.id_stat_date = (SELECT kdw.getZGLDateID FROM dual )  )
+) m,

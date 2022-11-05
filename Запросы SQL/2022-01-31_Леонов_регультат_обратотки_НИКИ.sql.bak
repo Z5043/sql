@@ -1,0 +1,18 @@
+SELECT distinct
+  CONCAT(YEAR(n_m.push_date), '_', MONTH(n_m.push_date)) Ãîä_ìåñÿö,
+  n_m.push_date Äàòà_íàæàòèÿ,
+  n_m.user_name Êîä_ïîëüçîâàòåëÿ,
+  n_m.item_num Àðòèêóë,
+  n_m.item_name Íàçâàíèå_òîâàðà,
+  n_m.qty Ê_âî_òîâàðà_åä_èçì,
+  n_m.s_qty Ê_âî_òîâàðà_ñóìì_åä_èçì,
+  n_m.whse_num Êîä_ñêëàäà_îòãðóçêè,
+  n_m.decision Êîììåíòàðèé_ðåøåíèÿ,
+  n_m.id ID_ñòðîêè_òàáëèöû,
+  n_m.b Êîä_êîììåíòàðèÿ_ðåøåíèÿ
+FROM
+  SERVERUS.nika_m n_m
+WHERE
+      ( n_m.push_date BETWEEN str_to_date((@Prompt('1. Äàòà íà÷àëà ïåðèîäà','A',,mono,free)),'%d.%m.%Y')
+                          AND str_to_date((@Prompt('2. Äàòà îêîí÷àíèÿ ïåðèîäà','A',,mono,free) ),'%d.%m.%Y') )
+  AND ( n_m.user_name NOT IN ('liv64') )

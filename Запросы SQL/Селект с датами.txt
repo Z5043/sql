@@ -1,0 +1,50 @@
+select year(CURRENT_DATE)-1 BETWEEN current_date-2 and current_date
+
+
+select * 
+from stock t 
+--where t.wdate >= DATE_FORMAT(DATE_ADD(curdate(), INTERVAL -2 YEAR), '%Y-01-01')
+WHERE year(t.wdate)>= year(CURRENT_date)-2
+
+SELECT   
+  DATE_FORMAT(R_CAL.CAL_DATE, %m.%d)
+  SUM(( (ITEM_R.ON_HAND + ITEM_R.DAMAGED) ))
+FROM
+  KDW.DWD_CALENDAR  R_CAL,
+  KDW.DWF_ITEM_R  ITEM_R
+WHERE
+  ( ITEM_R.ID_DATE=R_CAL.ID_DATE  )
+  AND  (
+  ( ITEM_R.ID_DATE  BETWEEN (SELECT kdw.getDateID(TO_DATE(@Prompt('1. Äàòà íà÷àëà ïåðèîäà','A',,mono,free), 'DD.MM.YYYY')) FROM dual) AND (SELECT kdw.getDateID(TO_DATE(@Prompt('2. Äàòà îêîí÷àíèÿ ïåðèîäà','A',,mono,free), 'DD.MM.YYYY')) FROM dual)  )
+  )
+GROUP BY
+  R_CAL.CAL_DATE
+
+
+
+SELECT   
+   DayNumberOfYear (R_CAL.CAL_DATE),
+  SUM(( (ITEM_R.ON_HAND + ITEM_R.DAMAGED) ))
+FROM
+  KDW.DWD_CALENDAR  R_CAL,
+  KDW.DWF_ITEM_R  ITEM_R
+WHERE
+  ( ITEM_R.ID_DATE=R_CAL.ID_DATE  )
+  AND  (
+  ( ITEM_R.ID_DATE  BETWEEN (SELECT kdw.getDateID(TO_DATE(@Prompt('1. Дата начала периода','A',,mono,free), 'DD.MM.YYYY')) FROM dual) AND (SELECT kdw.getDateID(TO_DATE(@Prompt('2. Дата окончания периода','A',,mono,free), 'DD.MM.YYYY')) FROM dual)  )
+  )
+GROUP BY
+  R_CAL.CAL_DATE
+
+
+select a.*,
+substr(year_week,6,2) as week
+from stock a
+where year(a.wdate)>=year(current_date)-2
+union 
+selecta.*,
+substr(year_week,6,2) as week,
+
+from stock a
+
+
